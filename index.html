@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Delivery Gum — PCTA Only</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .notice {
+      background: #eef2ff;
+      border-left: 4px solid #0054ff;
+      padding: 10px;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    select {
+      width: 65%;
+    }
+
+    .qty {
+      width: 30%;
+      margin-left: 5%;
+    }
+
+    button {
+      width: 100%;
+      background: #0054ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    button.secondary {
+      background: #e5e7eb;
+      color: #000;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .hp {
+      display: none;
+    }
+
+    .checkbox {
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Delivery Gum</h1>
+
+  <div class="notice">
+    🚫 This service is <strong>ONLY available to PCTA students</strong>.
+    Orders are verified before delivery.
+  </div>
+
+  <p>Follow <strong>@snackabot</strong> on Instagram before ordering.</p>
+
+  <form action="https://formspree.io/f/xjggyllq" method="POST" oninput="updateTotal()">
+
+    <!-- Honeypot -->
+    <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off">
+
+    <label>Your Instagram username</label>
+    <input type="text" name="instagram" placeholder="@user" required>
+
+    <label>Your order</label>
+    <div id="items">
+      <div class="item">
+        <select name="items[]" required>
+          <option value="" data-price="0">-- Select gum --</option>
+          <option data-price="2.50">Trident Tropical Twist — $2.50</option>
+          <option data-price="3.50">Orbit Mint Variety — $3.50</option>
+          <option data-price="3.50">Dentyne Ice — $3.50</option>
+          <option data-price="3.50">Extra 15ct — $3.50</option>
+          <option data-price="4.50">Extra Variety 35ct — $4.50</option>
+          <option data-price="5.00">5 Gum Peppermint Cobalt — $5.00</option>
+          <option data-price="6.00">Mentos Pure Fresh — $6.00</option>
+        </select>
+
+        <input class="qty" type="number" name="quantities[]" min="1" value="1" required>
+      </div>
+    </div>
+
+    <button type="button" class="secondary" onclick="addItem()">
+      + Add another item
+    </button>
+
+    <div class="total">
+      Total: $<span id="total">0.00</span>
+    </div>
+
+    <input type="hidden" name="total" id="totalInput">
+    <input type="hidden" name="_subject" value="New Delivery Gum Order (PCTA)">
+
+    <!-- PCTA Confirmation -->
+    <div class="checkbox">
+      <input type="checkbox" id="pcta" name="pcta_confirmation" required>
+      <label for="pcta">
+        I confirm that I am a current PCTA student
+      </label>
+    </div>
+
+    <button type="submit">
+      Place Order
+    </button>
+  </form>
+
+  <p class="small">
+    Non-PCTA orders will be canceled.
+  </p>
+</div>
+
+<script>
+  function addItem() {
+    const item = document.createElement("div");
+    item.className = "item";
+    item.innerHTML = `
+      <select name="items[]" required>
+        <option value="" data-price="0">-- Select gum --</option>
+        <option data-price="2.50">Trident Tropical Twist — $2.50</option>
+        <option data-price="3.50">Orbit Mint Variety — $3.50</option>
+        <option data-price="3.50">Dentyne Ice — $3.50</option>
+        <option data-price="3.50">Extra 15ct — $3.50</option>
+        <option data-price="4.50">Extra Variety 35ct — $4.50</option>
+        <option data-price="5.00">5 Gum Peppermint Cobalt — $5.00</option>
+        <option data-price="6.00">Mentos Pure Fresh — $6.00</option>
+      </select>
+      <input class="qty" type="number" name="quantities[]" min="1" value="1" required>
+    `;
+    document.getElementById("items").appendChild(item);
+  }
+
+  function updateTotal() {
+    let total = 0;
+    document.querySelectorAll(".item").forEach(item => {
+      const price = item.querySelector("select").selectedOptions[0].dataset.price || 0;
+      const qty = item.querySelector("input").value || 0;
+      total += parseFloat(price) * parseInt(qty);
+    });
+    total = total.toFixed(2);
+    document.getElementById("total").textContent = total;
+    document.getElementById("totalInput").value = "$" + total;
+  }
+</script>
+
+</body>
+</html>
