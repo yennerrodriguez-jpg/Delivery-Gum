@@ -142,8 +142,13 @@
     <div id="items">
       <div class="item">
         <select name="items[]" required>
-          <option value="" data-price="0">-- Select gum --</option>
-          <option data-price="2.00">Trident Tropical Twist — $2.00</option>
+          <option value="" data-price="0">-- Select item --</option>
+
+          <!-- Drinks -->
+          <option data-price="1.00">Capri Sun — $1.00</option>
+
+          <!-- Gum -->
+          <option data-price="2.00">Trident Tropical (Any Flavor) — $2.00</option>
           <option data-price="1.50">Orbit Variety — $1.50</option>
           <option data-price="1.50">Dentyne Ice 16ct — $1.50</option>
           <option data-price="1.80">Extra 15ct — $1.80</option>
@@ -181,8 +186,13 @@
     item.className = "item";
     item.innerHTML = `
       <select name="items[]" required>
-        <option value="" data-price="0">-- Select gum --</option>
-        <option data-price="2.00">Trident Tropical Twist — $2.00</option>
+        <option value="" data-price="0">-- Select item --</option>
+
+        <!-- Drinks -->
+        <option data-price="1.00">Capri Sun — $1.00</option>
+
+        <!-- Gum -->
+        <option data-price="2.00">Trident Tropical (Any Flavor) — $2.00</option>
         <option data-price="1.50">Orbit Variety — $1.50</option>
         <option data-price="1.50">Dentyne Ice 16ct — $1.50</option>
         <option data-price="1.80">Extra 15ct — $1.80</option>
@@ -197,7 +207,9 @@
   function updateTotal() {
     let total = 0;
     document.querySelectorAll(".item").forEach(item => {
-      const price = parseFloat(item.querySelector("select").selectedOptions[0].dataset.price || 0);
+      const price = parseFloat(
+        item.querySelector("select").selectedOptions[0].dataset.price || 0
+      );
       const qty = parseInt(item.querySelector("input").value || 0);
       total += price * qty;
     });
@@ -208,4 +220,3 @@
 
 </body>
 </html>
-
